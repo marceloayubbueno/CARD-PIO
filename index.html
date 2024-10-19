@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="styles/output.css" />
+   
+    <title>Dev Burguer - A melhor hamburgueria dev!</title>
+</head>
+
+<body>
+
+    <!--HEADER-->
+    <header class="w-full h-[420px] bg-zinc-900 bg-home bg-cover bg-center">
+   
+        <div class="w-full h-full flex flex-col justify-center items-center">
+            <img
+            src="./imagens/logo.png" 
+            alt="Logo dev burguer"
+            class="w-32 h-32 rounded-full shadow-lg hover:scale-110 duration-200" 
+        />
+       
+        <h1 class= "text-4x1 mt-4 mb-2 font-bold text-white">
+        BurguerZ
+        </h1>
+
+         <span class="text-white font-medium" >Rua Coronel Pedro João, Entre Morros - ES </span>
+
+         <div class="bg-green-600 px-4 py-1 rounded-lg mt-6" id="date-span">
+         <span class="text-white font-medium">Seg a domingo - 18:00 as 22:00</span>
+         </div>
+  
+        </div>    
+
+    </header>
+    <!--FIM HEADER-->
+
+    <!--TITULO MENU-->
+
+    <h2 class="text-2xl md:text-4xl font-bold text-center mt-9 mb-6">
+    Conheça nosso menu 
+    </h2>
+
+    <!--INICIO MENU-->
+    <div id="menu">
+
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-7 md:gap-10 mx-auto max-w-7xl px-2 mb-16">
+
+            <!--produto item 01-->
+            <div class="flex gap-2">
+                <img 
+                src="./imagens/01-Xalada.jpg" 
+                alt="Hamburuer Smash"
+                class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
+                />  
+            <div>
+                <p class="font-bold">Hambuguer Smach</p>
+                <p class="text-sm">Pão levinho de fermentação natural, buguer de 150g, queijo prato e maionese da casa</p>
+                
+                <div class="flex items-center gap-2 justify-between mt-3">
+                    <p class="font-bold text-lg">R$ 18,90</p>
+                    <button 
+                    class="bg-gray-900 px-5 rounded add-to-cart-btn"
+                    data-name="Hamburguer Smash"
+                    data-price="18,90"
+                    >
+                    <i class="fa fa-cart-plus text-lg text-white"></i>       
+                 </button>       
+                </div>
+
+            </div>
+                
+
+            </div>                
+            <!--fim produto item 01 -->
+
+                  <!--produto item 02 -->
+                  <div class="flex gap-2">
+                    <img 
+                    src="./imagens/02-Xbacon.jpg" 
+                    alt="Hamburuer duplo"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
+                    />  
+                <div>
+                    <p class="font-bold">Hambuguer Duplo</p>
+                    <p class="text-sm">Pão levinho de fermentação natural, buguer de 150g, queijo prato e maionese da casa</p>
+                    
+                    <div class="flex items-center gap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">R$ 32,90</p>
+                        <button 
+                        class="bg-gray-900 px-5 rounded add-to-cart-btn"
+                        data-name="Hamburguer Smash"
+                        data-price="32,90"
+                        >
+                        <i class="fa fa-cart-plus text-lg text-white"></i>       
+                     </button>       
+                    </div>
+    
+                </div>
+                </div>                
+                <!--fim produto item 03 -->
+
+         <!--produto item 02 -->
+         <div class="flex gap-2">
+            <img 
+            src="./imagens/03-EggX.jpg" 
+            alt="Hamburuer Egg"
+            class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
+            />  
+        <div>
+            <p class="font-bold">Hambuguer Egg</p>
+            <p class="text-sm">Pão levinho de fermentação natural, buguer de 150g, queijo prato e maionese da casa</p>
+            
+            <div class="flex items-center gap-2 justify-between mt-3">
+                <p class="font-bold text-lg">R$ 32,90</p>
+                <button 
+                class="bg-gray-900 px-5 rounded add-to-cart-btn"
+                data-name="Hamburguer Smash"
+                data-price="32,90"
+                >
+                <i class="fa fa-cart-plus text-lg text-white"></i>       
+             </button>       
+            </div>
+
+        </div>
+        </div>                
+        <!--fim produto item 03 -->
+
+
+                 <!--produto item 04 -->
+                 <div class="flex gap-2">
+                    <img 
+                    src="./imagens/04-XTudo.jpg" 
+                    alt="Hamburuer Salad"
+                    class="w-28 h-28 rounded-md hover:scale-110 hover:-rotate-2 duration-300"
+                    />  
+                <div>
+                    <p class="font-bold">Hambuguer Salad</p>
+                    <p class="text-sm">Pão levinho de fermentação natural, buguer de 150g, queijo prato e maionese da casa</p>
+                    
+                    <div class="flex items-center gap-2 justify-between mt-3">
+                        <p class="font-bold text-lg">R$ 32,90</p>
+                        <button 
+                        class="bg-gray-900 px-5 rounded add-to-cart-btn"
+                        data-name="Hamburguer Smash"
+                        data-price="32,90"
+                        >
+                        <i class="fa fa-cart-plus text-lg text-white"></i>       
+                     </button>       
+                    </div>
+    
+                </div>
+                </div>                
+                <!--fim produto item 02 -->
+        </main>
+
+
+    </div>
+<!--FIM MENU-->
+    
+</body>
+</html>
