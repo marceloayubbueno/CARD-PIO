@@ -20,7 +20,24 @@ let cart = [];
 let currentStep = 1;
 
 // Abrir o modal do carrinho
-cartBtn.addEventListener("click", function() {
+cartBtn.addEventListener("click", async function() {
+    // Verificar se o restaurante está aberto
+    const isOpen = await checkRestaurantOpen();
+    if (!isOpen) {
+        Toastify({
+            text: "🚫 Restaurante fechado! Funcionamos das 18:00 às 23:50",
+            duration: 4000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            stopOnFocus: true,
+            style: {
+                background: "#ef4444",
+            },
+        }).showToast();
+        return;
+    }
+
     currentStep = 1;
     updateCartModal();
     showStep(1);
@@ -60,7 +77,7 @@ prevStepBtn.addEventListener("click", function() {
 
 // CLIQUE NOS ITENS DO MENU 
 
-menu.addEventListener("click", function(event){
+menu.addEventListener("click", async function(event){
    
 
    let parentButton = event.target.closest(".add-to-cart-btn")
@@ -70,14 +87,31 @@ menu.addEventListener("click", function(event){
         const price = parseFloat(parentButton.getAttribute("data-price")
     )
       
-    addToCart(name,price)
+    await addToCart(name,price)
 
     }
 
 })
 
 // FUNÇÃO PARA ADICIONAR NO CARRINHO 
-function addToCart(name, price){
+async function addToCart(name, price){
+    // Verificar se o restaurante está aberto
+    const isOpen = await checkRestaurantOpen();
+    if (!isOpen) {
+        Toastify({
+            text: "🚫 Restaurante fechado! Funcionamos das 18:00 às 23:50",
+            duration: 4000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            stopOnFocus: true,
+            style: {
+                background: "#ef4444",
+            },
+        }).showToast();
+        return;
+    }
+
     const existingItem = cart.find(item => item.name === name)
 
     if(existingItem){
@@ -350,7 +384,19 @@ async function updateScheduleDisplay() {
         scheduleText = workingDaysNames.join(', ');
     }
     
-    const displayText = `${scheduleText} - ${schedule.openingTime} às ${schedule.closingTime}`;
+    const isOpen = await checkRestaurantOpen();
+    let displayText;
+    
+    if (schedule.forceClose) {
+        displayText = '🚫 Fechado temporariamente';
+    } else if (schedule.maintenanceMode) {
+        displayText = '🔧 Em manutenção';
+    } else if (isOpen) {
+        displayText = `✅ Aberto - ${scheduleText} ${schedule.openingTime} às ${schedule.closingTime}`;
+    } else {
+        displayText = `🚫 Fechado - ${scheduleText} ${schedule.openingTime} às ${schedule.closingTime}`;
+    }
+    
     document.getElementById('schedule-display').textContent = displayText;
 }
 
@@ -373,6 +419,11 @@ async function initializeRestaurantStatus() {
 
 // Initialize when page loads
 initializeRestaurantStatus();
+
+// Update status every minute
+setInterval(async () => {
+    await initializeRestaurantStatus();
+}, 60000); // 60 seconds
 
 // Step management functions
 function showStep(step) {
