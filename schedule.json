@@ -1,0 +1,8 @@
+{
+  "openingTime": "18:00",
+  "closingTime": "23:50",
+  "workingDays": [0, 1, 2, 3, 4, 5, 6],
+  "forceClose": false,
+  "maintenanceMode": false,
+  "lastUpdated": "2024-01-01T00:00:00.000Z"
+}
