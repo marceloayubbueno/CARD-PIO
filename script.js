@@ -25,7 +25,7 @@ cartBtn.addEventListener("click", function() {
     const isOpen = checkRestaurantOpen();
     if (!isOpen) {
         Toastify({
-            text: "🚫 Restaurante fechado! Funcionamos domingo das 18:30 às 21:30",
+            text: "🚫 Restaurante fechado! Funcionamos domingo das 13:00 às 21:30",
             duration: 4000,
             close: true,
             gravity: "top",
@@ -99,7 +99,7 @@ function addToCart(name, price){
     const isOpen = checkRestaurantOpen();
     if (!isOpen) {
         Toastify({
-            text: "🚫 Restaurante fechado! Funcionamos domingo das 18:30 às 21:30",
+            text: "🚫 Restaurante fechado! Funcionamos domingo das 13:00 às 21:30",
             duration: 4000,
             close: true,
             gravity: "top",
@@ -313,8 +313,8 @@ function checkRestaurantOpen(){
     const minuto = data.getMinutes();
     const diaSemana = data.getDay(); // 0 = Domingo
     
-    // Horário fixo: Domingo das 18:30 às 21:30
-    const openingTime = 18 * 60 + 30; // 18:30 em minutos
+    // Horário fixo: Domingo das 13:00 às 21:30
+    const openingTime = 13 * 60; // 13:00 em minutos
     const closingTime = 21 * 60 + 30; // 21:30 em minutos
     const currentTime = hora * 60 + minuto;
     
@@ -330,10 +330,10 @@ function updateScheduleDisplay() {
     
     if (isOpen) {
         statusText = '✅ Aberto';
-        scheduleInfo = 'Horário: Domingo das 18:30 às 21:30';
+        scheduleInfo = 'Horário: Domingo das 13:00 às 21:30';
     } else {
         statusText = '🚫 Fechado';
-        scheduleInfo = 'Horário: Domingo das 18:30 às 21:30';
+        scheduleInfo = 'Horário: Domingo das 13:00 às 21:30';
     }
     
     // Criar HTML com duas linhas
