@@ -350,12 +350,12 @@ function updateScheduleDisplay() {
 // Initialize restaurant status
 function initializeRestaurantStatus() {
     const spanItem = document.getElementById("date-span");
-    const isOpen = checkRestaurantOpen();
+const isOpen = checkRestaurantOpen();
 
-    if(isOpen){
+if(isOpen){
         spanItem.classList.remove("bg-gradient-to-r", "from-red-500", "to-red-600");
         spanItem.classList.add("bg-gradient-to-r", "from-green-500", "to-green-600");
-    }else{
+}else{
         spanItem.classList.remove("bg-gradient-to-r", "from-green-500", "to-green-600");
         spanItem.classList.add("bg-gradient-to-r", "from-red-500", "to-red-600");
     }
@@ -379,6 +379,28 @@ function showStep(step) {
     
     // Show current step
     document.getElementById(`step-${step}`).classList.remove('hidden');
+    
+    // Initialize payment elements when reaching step 4
+    if (step === 4) {
+        // Force immediate initialization
+        initializeChangeElements();
+        setupChangeToggleListener();
+        setupMoneyInputListener();
+        
+        // Force trigger change event for dinheiro if it's checked
+        const dinheiroRadio = document.querySelector('input[name="payment"][value="dinheiro"]');
+        if (dinheiroRadio && dinheiroRadio.checked) {
+            // Force show dinheiro section immediately
+            const changeSection = document.getElementById('change-section');
+            if (changeSection) {
+                changeSection.classList.remove('hidden');
+            }
+            // Then trigger the change event
+            setTimeout(() => {
+                dinheiroRadio.dispatchEvent(new Event('change'));
+            }, 10);
+        }
+    }
     
     // Update indicators
     for(let i = 1; i <= 4; i++) {
@@ -448,7 +470,7 @@ function resetSteps() {
     addressInput.classList.remove('border-red-500');
 }
 
-// Payment option interactions
+// Payment option interactions - ULTRA SIMPLE
 document.addEventListener('change', function(event) {
     if(event.target.name === 'payment') {
         // Update visual indicators
@@ -485,88 +507,116 @@ document.addEventListener('change', function(event) {
             pixSection.classList.remove('hidden');
             // Reset change inputs when switching away from cash
             needsChange = false;
-            changeInputs.classList.add('hidden');
-            changeToggleIcon.classList.remove('border-green-500');
-            changeToggleIcon.classList.add('border-gray-300');
-            changeToggleDot.classList.add('hidden');
-            changeToggleCard.classList.remove('border-green-500', 'bg-green-50');
-            changeToggleCard.classList.add('border-gray-200');
-            changeToggleArrow.innerHTML = '<i class="fa fa-chevron-right text-sm"></i>';
-            moneyGivenInput.value = '';
+            if (changeInputs) changeInputs.classList.add('hidden');
+            if (changeToggleIcon) {
+                changeToggleIcon.classList.remove('border-green-500');
+                changeToggleIcon.classList.add('border-gray-300');
+            }
+            if (changeToggleDot) changeToggleDot.classList.add('hidden');
+            if (changeToggleCard) {
+                changeToggleCard.classList.remove('border-green-500', 'bg-green-50');
+                changeToggleCard.classList.add('border-gray-200');
+            }
+            if (changeToggleArrow) changeToggleArrow.innerHTML = '<i class="fa fa-chevron-right text-sm"></i>';
+            if (moneyGivenInput) moneyGivenInput.value = '';
         } else {
             changeSection.classList.add('hidden');
             pixSection.classList.add('hidden');
             // Reset change inputs when switching away from cash
             needsChange = false;
-            changeInputs.classList.add('hidden');
-            changeToggleIcon.classList.remove('border-green-500');
-            changeToggleIcon.classList.add('border-gray-300');
-            changeToggleDot.classList.add('hidden');
-            changeToggleCard.classList.remove('border-green-500', 'bg-green-50');
-            changeToggleCard.classList.add('border-gray-200');
-            changeToggleArrow.innerHTML = '<i class="fa fa-chevron-right text-sm"></i>';
-            moneyGivenInput.value = '';
+            if (changeInputs) changeInputs.classList.add('hidden');
+            if (changeToggleIcon) {
+                changeToggleIcon.classList.remove('border-green-500');
+                changeToggleIcon.classList.add('border-gray-300');
+            }
+            if (changeToggleDot) changeToggleDot.classList.add('hidden');
+            if (changeToggleCard) {
+                changeToggleCard.classList.remove('border-green-500', 'bg-green-50');
+                changeToggleCard.classList.add('border-gray-200');
+            }
+            if (changeToggleArrow) changeToggleArrow.innerHTML = '<i class="fa fa-chevron-right text-sm"></i>';
+            if (moneyGivenInput) moneyGivenInput.value = '';
         }
     }
 });
 
 // Change calculation system
-const changeToggleCard = document.getElementById('change-toggle-card');
-const changeToggleIcon = document.getElementById('change-toggle-icon');
-const changeToggleDot = document.getElementById('change-toggle-dot');
-const changeToggleArrow = document.getElementById('change-toggle-arrow');
-const changeInputs = document.getElementById('change-inputs');
-const moneyGivenInput = document.getElementById('money-given');
-const orderTotalDisplay = document.getElementById('order-total-display');
-const moneyGivenDisplay = document.getElementById('money-given-display');
-const changeAmount = document.getElementById('change-amount');
-
+let changeToggleCard, changeToggleIcon, changeToggleDot, changeToggleArrow;
+let changeInputs, moneyGivenInput, orderTotalDisplay, moneyGivenDisplay, changeAmount;
 let needsChange = false;
 
+// Initialize change calculation elements
+function initializeChangeElements() {
+    changeToggleCard = document.getElementById('change-toggle-card');
+    changeToggleIcon = document.getElementById('change-toggle-icon');
+    changeToggleDot = document.getElementById('change-toggle-dot');
+    changeToggleArrow = document.getElementById('change-toggle-arrow');
+    changeInputs = document.getElementById('change-inputs');
+    moneyGivenInput = document.getElementById('money-given');
+    orderTotalDisplay = document.getElementById('order-total-display');
+    moneyGivenDisplay = document.getElementById('money-given-display');
+    changeAmount = document.getElementById('change-amount');
+}
+
 // Toggle change inputs visibility
-changeToggleCard.addEventListener('click', function() {
-    needsChange = !needsChange;
-    
-    if(needsChange) {
-        // Ativar troco
-        changeInputs.classList.remove('hidden');
-        changeToggleIcon.classList.add('border-green-500');
-        changeToggleIcon.classList.remove('border-gray-300');
-        changeToggleDot.classList.remove('hidden');
-        changeToggleCard.classList.add('border-green-500', 'bg-green-50');
-        changeToggleCard.classList.remove('border-gray-200');
-        changeToggleArrow.innerHTML = '<i class="fa fa-chevron-down text-sm"></i>';
-        updateOrderTotalDisplay();
-    } else {
-        // Desativar troco
-        changeInputs.classList.add('hidden');
-        changeToggleIcon.classList.remove('border-green-500');
-        changeToggleIcon.classList.add('border-gray-300');
-        changeToggleDot.classList.add('hidden');
-        changeToggleCard.classList.remove('border-green-500', 'bg-green-50');
-        changeToggleCard.classList.add('border-gray-200');
-        changeToggleArrow.innerHTML = '<i class="fa fa-chevron-right text-sm"></i>';
-        moneyGivenInput.value = '';
-        updateChangeDisplay();
+function setupChangeToggleListener() {
+    if (changeToggleCard) {
+        // Remove any existing listeners first
+        changeToggleCard.onclick = null;
+        // Add new listener
+        changeToggleCard.addEventListener('click', function() {
+            needsChange = !needsChange;
+            
+            if(needsChange) {
+                // Ativar troco
+                changeInputs.classList.remove('hidden');
+                changeToggleIcon.classList.add('border-green-500');
+                changeToggleIcon.classList.remove('border-gray-300');
+                changeToggleDot.classList.remove('hidden');
+                changeToggleCard.classList.add('border-green-500', 'bg-green-50');
+                changeToggleCard.classList.remove('border-gray-200');
+                changeToggleArrow.innerHTML = '<i class="fa fa-chevron-down text-sm"></i>';
+                updateOrderTotalDisplay();
+            } else {
+                // Desativar troco
+                changeInputs.classList.add('hidden');
+                changeToggleIcon.classList.remove('border-green-500');
+                changeToggleIcon.classList.add('border-gray-300');
+                changeToggleDot.classList.add('hidden');
+                changeToggleCard.classList.remove('border-green-500', 'bg-green-50');
+                changeToggleCard.classList.add('border-gray-200');
+                changeToggleArrow.innerHTML = '<i class="fa fa-chevron-right text-sm"></i>';
+                moneyGivenInput.value = '';
+                updateChangeDisplay();
+            }
+        });
     }
-});
+}
 
 // Calculate change when money given changes
-moneyGivenInput.addEventListener('input', function() {
-    updateChangeDisplay();
-});
+function setupMoneyInputListener() {
+    if (moneyGivenInput) {
+        moneyGivenInput.addEventListener('input', function() {
+            updateChangeDisplay();
+        });
+    }
+}
 
 // Update order total display
 function updateOrderTotalDisplay() {
-    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    orderTotalDisplay.textContent = total.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-    });
+    if (orderTotalDisplay) {
+        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        orderTotalDisplay.textContent = total.toLocaleString('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        });
+    }
 }
 
 // Update change calculation display
 function updateChangeDisplay() {
+    if (!moneyGivenInput || !moneyGivenDisplay || !changeAmount) return;
+    
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const moneyGiven = parseFloat(moneyGivenInput.value) || 0;
     
@@ -651,9 +701,76 @@ copyPixBtn.addEventListener('click', async function() {
 
 // Initialize steps and payment options
 showStep(1);
-// Initialize first payment option as selected
-document.querySelector('input[name="payment"][value="dinheiro"]').checked = true;
-document.querySelector('input[name="payment"][value="dinheiro"]').dispatchEvent(new Event('change'));
+
+// Direct handler for dinheiro click - GARANTE QUE FUNCIONE
+function handleDinheiroClick() {
+    console.log('Dinheiro clicked directly!');
+    
+    // Force show dinheiro section
+    const changeSection = document.getElementById('change-section');
+    const pixSection = document.getElementById('pix-section');
+    
+    if (changeSection) {
+        changeSection.classList.remove('hidden');
+        console.log('Dinheiro section shown');
+    }
+    if (pixSection) {
+        pixSection.classList.add('hidden');
+    }
+    
+    // Update visual indicators
+    document.querySelectorAll('.payment-option').forEach(option => {
+        const radio = option.querySelector('input[type="radio"]');
+        const radioCircle = option.querySelector('.payment-radio');
+        const dot = option.querySelector('.payment-dot');
+        
+        if(radio && radio.value === 'dinheiro') {
+            radioCircle.classList.add('border-green-500');
+            radioCircle.classList.remove('border-gray-300');
+            dot.classList.remove('hidden');
+            option.classList.add('border-green-500');
+            option.classList.remove('border-gray-200');
+        } else if(radio) {
+            radioCircle.classList.remove('border-green-500');
+            radioCircle.classList.add('border-gray-300');
+            dot.classList.add('hidden');
+            option.classList.remove('border-green-500');
+            option.classList.add('border-gray-200');
+        }
+    });
+    
+    // Initialize change elements if not already done
+    initializeChangeElements();
+    setupChangeToggleListener();
+    setupMoneyInputListener();
+    
+    updateOrderTotalDisplay();
+}
+
+// Initialize payment system when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize first payment option as selected
+    const dinheiroRadio = document.querySelector('input[name="payment"][value="dinheiro"]');
+    if (dinheiroRadio) {
+        dinheiroRadio.checked = true;
+        
+        // Initialize elements immediately
+        initializeChangeElements();
+        setupChangeToggleListener();
+        setupMoneyInputListener();
+        
+        // Force show dinheiro section immediately
+        const changeSection = document.getElementById('change-section');
+        if (changeSection) {
+            changeSection.classList.remove('hidden');
+        }
+        
+        // Then trigger change event
+        setTimeout(() => {
+            dinheiroRadio.dispatchEvent(new Event('change'));
+        }, 10);
+    }
+});
 
 // Update order total when cart changes
 function updateCartModal(){
