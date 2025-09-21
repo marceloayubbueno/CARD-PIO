@@ -20,12 +20,12 @@ let cart = [];
 let currentStep = 1;
 
 // Abrir o modal do carrinho
-cartBtn.addEventListener("click", async function() {
+cartBtn.addEventListener("click", function() {
     // Verificar se o restaurante está aberto
-    const isOpen = await checkRestaurantOpen();
+    const isOpen = checkRestaurantOpen();
     if (!isOpen) {
         Toastify({
-            text: "🚫 Restaurante fechado! Funcionamos das 18:00 às 23:50",
+            text: "🚫 Restaurante fechado! Funcionamos domingo das 18:30 às 21:30",
             duration: 4000,
             close: true,
             gravity: "top",
@@ -77,7 +77,7 @@ prevStepBtn.addEventListener("click", function() {
 
 // CLIQUE NOS ITENS DO MENU 
 
-menu.addEventListener("click", async function(event){
+menu.addEventListener("click", function(event){
    
 
    let parentButton = event.target.closest(".add-to-cart-btn")
@@ -87,19 +87,19 @@ menu.addEventListener("click", async function(event){
         const price = parseFloat(parentButton.getAttribute("data-price")
     )
       
-    await addToCart(name,price)
+    addToCart(name,price)
 
     }
 
 })
 
 // FUNÇÃO PARA ADICIONAR NO CARRINHO 
-async function addToCart(name, price){
+function addToCart(name, price){
     // Verificar se o restaurante está aberto
-    const isOpen = await checkRestaurantOpen();
+    const isOpen = checkRestaurantOpen();
     if (!isOpen) {
         Toastify({
-            text: "🚫 Restaurante fechado! Funcionamos das 18:00 às 23:50",
+            text: "🚫 Restaurante fechado! Funcionamos domingo das 18:30 às 21:30",
             duration: 4000,
             close: true,
             gravity: "top",
@@ -236,9 +236,9 @@ addressInput.addEventListener("input", function(event){
 })
 
 // finalizar pedido 
-checkoutBtn.addEventListener("click",async function(){ 
+checkoutBtn.addEventListener("click",function(){ 
     
-    const isOpen = await checkRestaurantOpen(); 
+    const isOpen = checkRestaurantOpen(); 
     if(!isOpen){
          
         Toastify({
@@ -307,122 +307,69 @@ checkoutBtn.addEventListener("click",async function(){
 
 // verificar a hora e manipular o card de horario
 
-async function checkRestaurantOpen(){
-    // Try to get schedule from JSON file
-    let schedule = {
-        openingTime: '18:00',
-        closingTime: '23:50',
-        workingDays: [0, 1, 2, 3, 4, 5, 6],
-        forceClose: false,
-        maintenanceMode: false
-    };
-    
-    try {
-        const response = await fetch('./schedule.json');
-        if (response.ok) {
-            const data = await response.json();
-            schedule = { ...schedule, ...data };
-        }
-    } catch (error) {
-        console.log('Usando configurações padrão');
-    }
-    
-    // Check if forced closed or in maintenance
-    if (schedule.forceClose || schedule.maintenanceMode) {
-        return false;
-    }
-    
+function checkRestaurantOpen(){
     const data = new Date();
     const hora = data.getHours();
     const minuto = data.getMinutes();
-    const diaSemana = data.getDay();
+    const diaSemana = data.getDay(); // 0 = Domingo
     
-    // Check if today is a working day
-    if (!schedule.workingDays.includes(diaSemana)) {
-        return false;
-    }
-    
-    // Parse opening and closing times
-    const [openHour, openMinute] = schedule.openingTime.split(':').map(Number);
-    const [closeHour, closeMinute] = schedule.closingTime.split(':').map(Number);
-    
-    const openTime = openHour * 60 + openMinute;
-    const closeTime = closeHour * 60 + closeMinute;
+    // Horário fixo: Domingo das 18:30 às 21:30
+    const openingTime = 18 * 60 + 30; // 18:30 em minutos
+    const closingTime = 21 * 60 + 30; // 21:30 em minutos
     const currentTime = hora * 60 + minuto;
     
-    // Check if current time is within working hours
-    return currentTime >= openTime && currentTime <= closeTime;
+    // Verificar se é domingo e está no horário
+    return diaSemana === 0 && currentTime >= openingTime && currentTime <= closingTime;
 }
 
 // Update schedule display
-async function updateScheduleDisplay() {
-    let schedule = {
-        openingTime: '18:00',
-        closingTime: '23:50',
-        workingDays: [0, 1, 2, 3, 4, 5, 6]
-    };
+function updateScheduleDisplay() {
+    const isOpen = checkRestaurantOpen();
+    let statusText;
+    let scheduleInfo;
     
-    try {
-        const response = await fetch('./schedule.json');
-        if (response.ok) {
-            const data = await response.json();
-            schedule = { ...schedule, ...data };
-        }
-    } catch (error) {
-        console.log('Usando configurações padrão');
-    }
-    
-    const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-    const workingDaysNames = schedule.workingDays.map(day => dayNames[day]);
-    
-    let scheduleText;
-    if (schedule.workingDays.length === 7) {
-        scheduleText = 'Todos os dias';
-    } else if (schedule.workingDays.length === 1) {
-        scheduleText = workingDaysNames[0];
+    if (isOpen) {
+        statusText = '✅ Aberto';
+        scheduleInfo = 'Horário: Domingo das 18:30 às 21:30';
     } else {
-        scheduleText = workingDaysNames.join(', ');
+        statusText = '🚫 Fechado';
+        scheduleInfo = 'Horário: Domingo das 18:30 às 21:30';
     }
     
-    const isOpen = await checkRestaurantOpen();
-    let displayText;
+    // Criar HTML com duas linhas
+    const displayHTML = `
+        <div class="text-center">
+            <div class="text-lg font-bold">${statusText}</div>
+            <div class="text-sm opacity-90 mt-1">${scheduleInfo}</div>
+        </div>
+    `;
     
-    if (schedule.forceClose) {
-        displayText = '🚫 Fechado temporariamente';
-    } else if (schedule.maintenanceMode) {
-        displayText = '🔧 Em manutenção';
-    } else if (isOpen) {
-        displayText = `✅ Aberto - ${scheduleText} ${schedule.openingTime} às ${schedule.closingTime}`;
-    } else {
-        displayText = `🚫 Fechado - ${scheduleText} ${schedule.openingTime} às ${schedule.closingTime}`;
-    }
-    
-    document.getElementById('schedule-display').textContent = displayText;
+    document.getElementById('schedule-display').innerHTML = displayHTML;
 }
 
 // Initialize restaurant status
-async function initializeRestaurantStatus() {
+function initializeRestaurantStatus() {
     const spanItem = document.getElementById("date-span");
-    const isOpen = await checkRestaurantOpen();
+    const isOpen = checkRestaurantOpen();
 
     if(isOpen){
-        spanItem.classList.remove("bg-red-500");
-        spanItem.classList.add("bg-green-600");
+        spanItem.classList.remove("bg-gradient-to-r", "from-red-500", "to-red-600");
+        spanItem.classList.add("bg-gradient-to-r", "from-green-500", "to-green-600");
     }else{
-        spanItem.classList.remove("bg-green-600");
-        spanItem.classList.add("bg-red-500");
+        spanItem.classList.remove("bg-gradient-to-r", "from-green-500", "to-green-600");
+        spanItem.classList.add("bg-gradient-to-r", "from-red-500", "to-red-600");
     }
 
     // Update schedule display
-    await updateScheduleDisplay();
+    updateScheduleDisplay();
 }
 
 // Initialize when page loads
 initializeRestaurantStatus();
 
 // Update status every minute
-setInterval(async () => {
-    await initializeRestaurantStatus();
+setInterval(() => {
+    initializeRestaurantStatus();
 }, 60000); // 60 seconds
 
 // Step management functions
